@@ -15,13 +15,23 @@ module.exports = {
     try {
       const user = await User.create(req.body)
       res.status(201).send({
-        user,
+        code: 200,
+        user: {
+          email: user.email,
+          id: user.id
+        },
         token: tokenSign(user)
       })
     } catch (error) {
+      let err = []
+      if (error.errors) {
+        error.errors.forEach(validateError => {
+          err.push(validateError.message)
+        })
+      }
       res.status(400).send({
         code: 400,
-        error: '该邮箱已经注册'
+        error: err.join('<br/>')
       })
     }
   },
@@ -94,8 +104,17 @@ module.exports = {
       let isValidPassword = user.comparePassword(req.body.password)
       if (isValidPassword) {
         res.send({
-          user: user.toJSON(),
+          code: 200,
+          user: {
+            email: user.email,
+            id: user.id
+          },
           token: tokenSign(user)
+        })
+      } else {
+        res.status(403).send({
+          code: 403,
+          error: '用户名或密码错误'
         })
       }
     } catch (error) {
