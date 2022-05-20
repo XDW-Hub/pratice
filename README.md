@@ -1,5 +1,3 @@
-Vue+Element+Express 全栈开发
-
 # 主要功能点
 * Vue router使用
 * 用户的注册登录及校验
